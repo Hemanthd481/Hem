@@ -1,0 +1,7 @@
+body{font-family:system-ui, Arial, sans-serif; margin:0;}
+nav{display:flex; gap:1rem; padding:1rem; background:#0d9488;}
+nav a{color:white; text-decoration:none; font-weight:600;}
+main{padding:1rem;}
+.grid{display:grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap:0.75rem;}
+label{display:flex; flex-direction:column; gap:0.25rem;}
+button{background:#0d9488; border:none; color:white; padding:0.5rem 1rem; border-radius:4px; cursor:pointer;}
