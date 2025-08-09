@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Register</h2>
+{% if error %}<p style="color:red">{{ error }}</p>{% endif %}
+<form method="post">{% csrf_token %}
+  <label>Username <input type="text" name="username" required></label>
+  <label>Password <input type="password" name="password" required></label>
+  <label>Role
+    <select name="role" required>
+      <option value="doctor">Doctor</option>
+      <option value="patient">Patient</option>
+    </select>
+  </label>
+  <button type="submit">Create account</button>
+</form>
+{% endblock %}

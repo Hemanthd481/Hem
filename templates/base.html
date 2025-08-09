@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>MedAI</title>
+  <link rel="stylesheet" href="/static/css/styles.css">
+</head>
+<body>
+  <nav>
+    <a href="/">Home</a>
+    <a href="/accounts/login/">Login</a>
+    <a href="/accounts/register/">Register</a>
+    <a href="/predictions/">Predictions</a>
+    <a href="/chatbot/">Chatbot</a>
+  </nav>
+  <main>
+    {% block content %}{% endblock %}
+  </main>
+  <script src="/static/js/app.js"></script>
+</body>
+</html>

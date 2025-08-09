@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Dashboard ({{ role }})</h2>
+<ul>
+  {% if role == 'doctor' %}
+    <li><a href="/accounts/create-patient/">Create patient ID</a></li>
+  {% endif %}
+  <li><a href="/predictions/">Run Prediction</a></li>
+  <li><a href="/chatbot/">Open Chatbot</a></li>
+</ul>
+{% endblock %}

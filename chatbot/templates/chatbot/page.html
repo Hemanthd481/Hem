@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Chatbot</h2>
+<div id="chat" style="border:1px solid #ccc; padding:1rem; height:300px; overflow:auto;"></div>
+<form id="chat-form">{% csrf_token %}
+  <input id="msg" type="text" placeholder="Ask me about your prediction, features, etc." style="width:80%">
+  <button>Send</button>
+</form>
+<script>
+const chat = document.getElementById('chat');
+const form = document.getElementById('chat-form');
+const msg = document.getElementById('msg');
+function add(role, text){
+  const p = document.createElement('p');
+  p.textContent = role + ': ' + text;
+  chat.appendChild(p);
+  chat.scrollTop = chat.scrollHeight;
+}
+function reply(text){
+  const t = text.toLowerCase();
+  if(t.includes('random forest')) return 'Random Forest is an ensemble of decision trees; it improves accuracy and reduces overfitting.';
+  if(t.includes('feature')) return 'Provide numeric values for all listed features; the model will output class and probabilities.';
+  if(t.includes('accuracy')) return 'The demo model is trained on scikit-learn breast cancer dataset with typical accuracy > 90%.';
+  return 'I am a simple rules-based helper. Try asking about features, accuracy, or Random Forest.';
+}
+form.addEventListener('submit', (e)=>{
+  e.preventDefault();
+  const text = msg.value.trim();
+  if(!text) return;
+  add('You', text);
+  add('Bot', reply(text));
+  msg.value = '';
+});
+</script>
+{% endblock %}
