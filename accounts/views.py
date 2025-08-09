@@ -28,7 +28,7 @@ def register_view(request: HttpRequest) -> HttpResponse:
     if request.method == 'POST':
         username = request.POST.get('username')
         password = request.POST.get('password')
-        role = request.POST.get('role')  # 'doctor' or 'patient'
+        role = request.POST.get('role')
         if not username or not password or role not in {'doctor', 'patient'}:
             return render(request, 'accounts/register.html', {'error': 'Fill all fields correctly.'})
         if User.objects.filter(username=username).exists():
