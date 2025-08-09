@@ -10,6 +10,10 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score
 from sklearn.datasets import load_breast_cancer
 import numpy as np
+from django.contrib.auth.models import User
+from accounts.models import Patient
+from .models import Prediction
+import json
 
 MODEL_PATH = Path(__file__).resolve().parent / 'rf_model.joblib'
 META_PATH = MODEL_PATH.with_suffix('.json')
@@ -40,6 +44,16 @@ def ensure_model() -> Dict[str, Any]:
     return {"model": model, "feature_names": FEATURE_NAMES, "accuracy": float(acc)}
 
 
+def _get_labels() -> list:
+    if META_PATH.exists():
+        import json
+        data = json.loads(META_PATH.read_text())
+        labels = data.get('labels')
+        if labels:
+            return labels
+    return ["benign", "malignant"]
+
+
 @login_required
 def form_view(request: HttpRequest) -> HttpResponse:
     ctx = ensure_model()
@@ -59,4 +73,23 @@ def predict_api(request: HttpRequest):
     X = np.array([[payload[name] for name in feature_names]], dtype=float)
     y_pred = ctx["model"].predict(X)[0]
     proba = ctx["model"].predict_proba(X)[0].tolist()
-    return JsonResponse({"prediction": int(y_pred), "probabilities": proba, "labels": ["benign", "malignant"]})
+    labels = _get_labels()
+    # Save history
+    doctor_user: User | None = None
+    role = request.user.first_name or 'patient'
+    if role == 'doctor':
+        doctor_user = request.user
+    else:
+        try:
+            doctor_user = request.user.patient_profile.doctor
+        except Patient.DoesNotExist:
+            doctor_user = None
+    Prediction.objects.create(
+        user=request.user,
+        doctor=doctor_user,
+        features=payload,
+        predicted_class=int(y_pred),
+        probabilities=proba,
+        labels=labels,
+    )
+    return JsonResponse({"prediction": int(y_pred), "probabilities": proba, "labels": labels})
