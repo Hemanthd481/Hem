@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+{% block content %}
+<h3>Disease Prediction</h3>
+<form method="post" action="/predict/run/" class="row g-3 mb-4">
+  {% csrf_token %}
+  <div class="col-md-4">
+    <label class="form-label">Disease</label>
+    <select name="disease" class="form-select" id="disease-select">
+      {% for key, label in diseases %}
+        <option value="{{ key }}">{{ label }}</option>
+      {% endfor %}
+    </select>
+  </div>
+  <div id="feature-fields" class="row g-3 mt-2">
+    {% comment %} Fields will be shown for selected disease below {% endcomment %}
+    {% for key, features in required_features.items %}
+      <div class="disease-fields" data-disease="{{ key }}" style="display:none;">
+        {% for f in features %}
+          <div class="col-md-3">
+            <label class="form-label">{{ f }}</label>
+            <input type="number" step="any" name="{{ f }}" class="form-control" />
+          </div>
+        {% endfor %}
+      </div>
+    {% endfor %}
+  </div>
+  <div class="col-12">
+    <button class="btn btn-primary" type="submit">Predict</button>
+  </div>
+</form>
+{% if prediction %}
+  <div class="alert {% if prediction.result %}alert-danger{% else %}alert-success{% endif %}">
+    <strong>Result:</strong> {{ prediction.get_disease_display }} — {% if prediction.result %}Positive{% else %}Negative{% endif %} (Probability: {{ prediction.probability|floatformat:2 }})
+  </div>
+{% endif %}
+<script>
+const requiredFeatures = {{ required_features|safe }};
+const select = document.getElementById('disease-select');
+function updateFields() {
+  document.querySelectorAll('.disease-fields').forEach(el => el.style.display = 'none');
+  const key = select.value;
+  const el = document.querySelector(`.disease-fields[data-disease="${key}"]`);
+  if (el) el.style.display = '';
+}
+select.addEventListener('change', updateFields);
+updateFields();
+</script>
+{% endblock %}

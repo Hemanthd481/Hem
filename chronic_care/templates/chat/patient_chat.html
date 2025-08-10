@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% block content %}
+<h3>Chat with Doctor</h3>
+{% if doctor %}
+<div class="border rounded p-3 mb-3" style="max-height: 350px; overflow:auto; background: #fafafa;">
+  {% for m in thread %}
+    <div class="mb-2">
+      <strong>{{ m.sender.username }}:</strong> {{ m.body }}
+      <small class="text-muted">{{ m.created_at|date:'Y-m-d H:i' }}</small>
+    </div>
+  {% empty %}
+    <div class="text-muted">No messages yet</div>
+  {% endfor %}
+</div>
+<form method="post" class="d-flex gap-2">
+  {% csrf_token %}
+  <input class="form-control" name="body" placeholder="Type your message" />
+  <button class="btn btn-primary" type="submit">Send</button>
+</form>
+{% else %}
+<div class="alert alert-warning">No doctor account found.</div>
+{% endif %}
+{% endblock %}
