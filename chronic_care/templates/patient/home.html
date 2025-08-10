@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% block content %}
+<h3>Welcome</h3>
+{% if room %}
+  <div class="alert alert-info">You are allotted to room <strong>{{ room.room_number }}</strong></div>
+{% else %}
+  <div class="alert alert-secondary">Room allotment not assigned yet.</div>
+{% endif %}
+<h4 class="mt-4">Announcements</h4>
+<div class="list-group">
+  {% for a in announcements %}
+  <div class="list-group-item">
+    <div class="d-flex w-100 justify-content-between">
+      <h5 class="mb-1">{{ a.title }}</h5>
+      <small>{{ a.created_at|date:'Y-m-d H:i' }}</small>
+    </div>
+    <p class="mb-1">{{ a.content }}</p>
+  </div>
+  {% empty %}
+  <div class="alert alert-info">No announcements yet.</div>
+  {% endfor %}
+</div>
+{% endblock %}
